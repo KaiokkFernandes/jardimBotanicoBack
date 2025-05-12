@@ -1,40 +1,16 @@
-import { PrismaClient } from "@prisma/client"
 import fastify from "fastify";
-import {z} from "zod";
-
-const app = fastify();  
-const prisma = new PrismaClient();
+import { userRoutes } from "./routes/users/users";
+import { especimeRoutes } from "./routes/especime/especime";
 
 
-app.get("/Users", async (request, reply) => {   
-    const users = await prisma.user.findMany();
+const app = fastify();
 
-    return users;
-});
-
-app.post("/Users", async (request, reply) => {
-
-    const userSchema = z.object({
-        name: z.string(),
-        email: z.string().email(),
-    });
-
-    const { name, email } = userSchema.parse(request.body);
-
-    await prisma.user.create({
-        data: {
-            name,
-            email,
-        },
-    }); 
-
-    return reply.status(201).send({ message: "User created successfully" });
-});
-
+app.register(userRoutes);
+app.register(especimeRoutes);
 
 app.listen({
-    host: '0.0.0.0',
-    port: process.env.PORT ? Number(process.env.PORT) : 3000,
+  host: "0.0.0.0",
+  port: process.env.PORT ? Number(process.env.PORT) : 3000,
 }).then(() => {
-    console.log('Server is runnin');
-})
+  console.log("✅ Server is running on port 3000");
+});
