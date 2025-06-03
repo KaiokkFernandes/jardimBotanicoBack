@@ -7,7 +7,9 @@ const app = fastify();
 app.register(userRoutes);
 app.register(especimeRoutes);
 app.register(cors, {
-    origin: 'http://localhost:3001',
+  origin: 'http://localhost:3001',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type']
 })
 
 
