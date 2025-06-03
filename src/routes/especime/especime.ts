@@ -20,10 +20,13 @@ export async function especimeRoutes(app: FastifyInstance) {
   app.post("/especimes", async (request, reply) => {
     const bodySchema = z.object({
       name: z.string(),
+      scientific_name: z.string(),
       category: z.string(),
       description: z.string().optional(),
       habitat: z.string().optional(),
       curiosity: z.string().optional(),
+      imagem_url: z.string().optional(),
+      type: z.enum(['FAUNA', 'FLORA']),
     });
     const data = bodySchema.parse(request.body);
 
@@ -36,11 +39,13 @@ export async function especimeRoutes(app: FastifyInstance) {
     const { id } = paramsSchema.parse(request.params);
 
     const bodySchema = z.object({
-      name: z.string().optional(),
-      category: z.string().optional(),
+      name: z.string(),
+      scientific_name: z.string(),
+      category: z.string(),
       description: z.string().optional(),
       habitat: z.string().optional(),
       curiosity: z.string().optional(),
+      imagem_url: z.string().optional(),
     });
     const data = bodySchema.parse(request.body);
 
