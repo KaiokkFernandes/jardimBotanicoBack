@@ -42,7 +42,7 @@ export async function especimeRoutes(app: FastifyInstance) {
       habitat: z.string().optional(),
       curiosity: z.string().optional(),
       imagem_url: z.string().optional(),
-      type: z.enum(['FAUNA', 'FLORA']),
+      specimen_type: z.enum(['FAUNA', 'FLORA']),
     });
     const data = bodySchema.parse(request.body);
 
