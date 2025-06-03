@@ -41,8 +41,8 @@ export async function especimeRoutes(app: FastifyInstance) {
       description: z.string().optional(),
       habitat: z.string().optional(),
       curiosity: z.string().optional(),
-      imagem_url: z.string().optional(),
       specimen_type: z.enum(['FAUNA', 'FLORA']),
+      image_url: z.string().optional(),
     });
     const data = bodySchema.parse(request.body);
 
@@ -61,7 +61,8 @@ export async function especimeRoutes(app: FastifyInstance) {
       description: z.string().optional(),
       habitat: z.string().optional(),
       curiosity: z.string().optional(),
-      imagem_url: z.string().optional(),
+      specimen_type: z.enum(['FAUNA', 'FLORA']),
+      image_url: z.string().optional(),
     });
     const data = bodySchema.parse(request.body);
 
