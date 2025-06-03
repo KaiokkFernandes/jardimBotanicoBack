@@ -7,6 +7,22 @@ export async function especimeRoutes(app: FastifyInstance) {
     return prisma.especime.findMany();
   });
 
+  app.get("/especimes/tipo/:type", async (request, reply) => {
+    const paramsSchema = z.object({
+      type: z.enum(['FAUNA', 'FLORA']),
+    });
+    const { type } = paramsSchema.parse(request.params);
+
+    const especimes = await prisma.especime.findMany({
+      where: {
+        specimen_type: type, 
+      },
+    });
+
+    return especimes;
+  });
+
+
   app.get("/especimes/:id", async (request, reply) => {
     const paramsSchema = z.object({ id: z.string().cuid() });
     const { id } = paramsSchema.parse(request.params);

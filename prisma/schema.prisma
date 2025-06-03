@@ -13,11 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Type {
-  FAUNA
-  FLORA
-}
-
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -27,17 +22,21 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+enum Type {
+  FAUNA
+  FLORA
+}
 
 model especime {
-  id       String   @id @default(cuid())
-  name     String?
-  category String?
-  description String?
-  habitat String?
-  curiosity String?
-  scientific_name String?
-  image_url      String?
-  type           Type @default(FAUNA)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String?
+  category          String?
+  description       String?
+  habitat           String?
+  curiosity         String?
+  scientific_name   String?
+  image_url         String?
+  specimen_type     Type @default(FAUNA)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
