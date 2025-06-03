@@ -1,12 +1,15 @@
 import fastify from "fastify";
 import { userRoutes } from "./routes/users/users";
 import { especimeRoutes } from "./routes/especime/especime";
-
-
+import cors from '@fastify/cors'
 const app = fastify();
 
 app.register(userRoutes);
 app.register(especimeRoutes);
+app.register(cors, {
+    origin: 'http://localhost:3001',
+})
+
 
 app.listen({
   host: "0.0.0.0",
