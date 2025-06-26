@@ -40,3 +40,16 @@ model especime {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+model visitas {
+  id                      String   @id @default(cuid())
+  visitor_name            String
+  group_size              Int      @default(1)
+  course                  String?
+  country                 String   @default("BRAZIL")
+  state                   String   @default("RIO GRANDE DO SUL")
+  city                    String   @default("SANTA MARIA")
+  purpose                 String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
