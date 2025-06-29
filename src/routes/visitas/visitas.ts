@@ -23,51 +23,53 @@ export async function visitaRoutes(app: FastifyInstance) {
         return visita;
     });
 
-    // ✅ Criar nova visita
-    app.post("/visitas", async (request, reply) => {
-        const bodySchema = z.object({
-            visitor_name: z.string(),
-            group_size: z.number().min(1).default(1),
-            course: z.string().nullable().optional(),
-            country: z.string().default("BRAZIL"),
-            state: z.string().default("RIO GRANDE DO SUL"),
-            city: z.string().default("SANTA MARIA"),
-            purpose: z.string().nullable().optional()
-        });
-
-        const data = bodySchema.parse(request.body);
-
-        const visita = await prisma.visitas.create({ data });
-
-        return reply.status(201).send(visita);
+    // Rota para criar uma visita
+  app.post("/visitas", async (request, reply) => {
+    const bodySchema = z.object({
+      visitor_name: z.string(),
+      group_size: z.number().min(1).default(1),
+      course: z.string().nullable().optional(),
+      country: z.string().default("BRAZIL"),
+      state: z.string().default("RIO GRANDE DO SUL"),
+      city: z.string().default("SANTA MARIA"),
+      purpose: z.string().nullable().optional(),
+      gender: z.enum(["MASCULINO", "FEMININO", "OUTRO"]).optional(),
     });
 
-    // ✅ Atualizar visita
-    app.put("/visitas/:id", async (request, reply) => {
-        const paramsSchema = z.object({
-            id: z.string().cuid()
-        });
+    const data = bodySchema.parse(request.body);
 
-        const bodySchema = z.object({
-            visitor_name: z.string(),
-            group_size: z.number().min(1),
-            course: z.string().nullable().optional(),
-            country: z.string(),
-            state: z.string(),
-            city: z.string(),
-            purpose: z.string().nullable().optional()
-        });
+    await prisma.visitas.create({ data });
 
-        const { id } = paramsSchema.parse(request.params);
-        const data = bodySchema.parse(request.body);
+    return reply.code(201).send({ message: "Visita criada com sucesso" });
+  });
 
-        const updated = await prisma.visitas.update({
-            where: { id },
-            data
-        });
-
-        return updated;
+  // Rota para atualizar uma visita existente
+  app.put("/visitas/:id", async (request, reply) => {
+    const paramsSchema = z.object({
+      id: z.string().uuid(),
     });
+
+    const bodySchema = z.object({
+      visitor_name: z.string(),
+      group_size: z.number().min(1),
+      course: z.string().nullable().optional(),
+      country: z.string(),
+      state: z.string(),
+      city: z.string(),
+      purpose: z.string().nullable().optional(),
+      gender: z.enum(["MASCULINO", "FEMININO", "OUTRO"]).optional(),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const data = bodySchema.parse(request.body);
+
+    await prisma.visitas.update({
+      where: { id },
+      data,
+    });
+
+    return reply.send({ message: "Visita atualizada com sucesso" });
+  });
 
     // ✅ Deletar visita
     app.delete("/visitas/:id", async (request, reply) => {

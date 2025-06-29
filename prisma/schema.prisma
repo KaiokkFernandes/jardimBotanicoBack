@@ -27,6 +27,13 @@ enum Type {
   FLORA
 }
 
+enum Gender {
+  MASCULINO
+  FEMININO
+  OUTRO
+}
+
+
 model especime {
   id                String   @id @default(cuid())
   name              String?
@@ -42,14 +49,15 @@ model especime {
 }
 
 model visitas {
-  id                      String   @id @default(cuid())
-  visitor_name            String
-  group_size              Int      @default(1)
-  course                  String?
-  country                 String   @default("BRAZIL")
-  state                   String   @default("RIO GRANDE DO SUL")
-  city                    String   @default("SANTA MARIA")
-  purpose                 String?
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  id            String   @id @default(cuid())
+  visitor_name  String
+  group_size    Int      @default(1)
+  course        String?
+  gender        Gender?  // campo opcional com valores do enum
+  country       String   @default("BRAZIL")
+  state         String   @default("RIO GRANDE DO SUL")
+  city          String   @default("SANTA MARIA")
+  purpose       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
