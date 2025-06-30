@@ -85,4 +85,75 @@ export async function visitaRoutes(app: FastifyInstance) {
 
         return reply.status(204).send();
     });
+  // Rota para obter estatísticas de visitas 
+
+  app.get("/estatisticas/genero", async (request, reply) => {
+    const result = await prisma.visitas.groupBy({
+      by: ["gender"],
+      _count: { gender: true },
+    });
+    return result.map(r => ({ genero: r.gender, total: r._count.gender }));
+  });
+
+  app.get("/estatisticas/curso", async (request, reply) => {
+    const result = await prisma.visitas.groupBy({
+      by: ["course"],
+      _count: { course: true },
+      orderBy: { _count: { course: "desc" } },
+      take: 10,
+      where: { course: { not: "" } },
+    });
+    return result.map(r => ({ curso: r.course, total: r._count.course }));
+  });
+
+  app.get("/estatisticas/estado", async (request, reply) => {
+    const result = await prisma.visitas.groupBy({
+      by: ["state"],
+      _count: { state: true },
+      orderBy: { _count: { state: "desc" } },
+    });
+    return result.map(r => ({ estado: r.state, total: r._count.state }));
+  });
+
+  app.get("/estatisticas/data", async (request, reply) => {
+    const result = await prisma.visitas.groupBy({
+      by: ["createdAt"],
+      _count: { createdAt: true },
+      orderBy: { createdAt: "asc" },
+    });
+    return result.map(r => ({
+      data: r.createdAt.toISOString().split("T")[0],
+      total: r._count.createdAt,
+    }));
+  });
+
+app.get("/estatisticas/total-visitas", async (request, reply) => {
+  const querySchema = z.object({
+    ano: z.string().optional(), // permite ?ano=2024
+  });
+  const { ano } = querySchema.parse(request.query);
+  const anoSelecionado = parseInt(ano ?? "") || new Date().getFullYear();
+
+  const inicioDoAno = new Date(`${anoSelecionado}-01-01T00:00:00.000Z`);
+  const fimDoAno = new Date(`${anoSelecionado}-12-31T23:59:59.999Z`);
+
+  try {
+    const total = await prisma.visitas.count({
+      where: {
+        createdAt: {
+          gte: inicioDoAno,
+          lte: fimDoAno,
+        },
+      },
+    });
+
+    return { ano: anoSelecionado, total};
+  } catch (error) {
+    console.error("Erro ao buscar total de visitas:", error);
+    return reply.status(500).send({ error: "Erro ao buscar total de visitas" });
+  }
+});
+
+
+
 }
