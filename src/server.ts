@@ -11,7 +11,7 @@ app.register(fastifyJwt, {
 });
 
 app.register(cors, {
-  origin: 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type']
 })
