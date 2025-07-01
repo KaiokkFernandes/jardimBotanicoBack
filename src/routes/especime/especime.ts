@@ -82,4 +82,19 @@ export async function especimeRoutes(app: FastifyInstance) {
 
     return reply.code(204).send();
   });
+
+  app.get("/estatisticas/total-especimes", async (request, reply) => {
+  try {
+    const [total, totalFauna, totalFlora] = await Promise.all([
+      prisma.especime.count(),
+      prisma.especime.count({ where: { specimen_type: "FAUNA" } }),
+      prisma.especime.count({ where: { specimen_type: "FLORA" } }),
+    ]);
+
+    return { total, totalFauna, totalFlora };
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de espécimes:", error);
+    return reply.status(500).send({ error: "Erro ao buscar estatísticas de espécimes" });
+  }
+});
 }
