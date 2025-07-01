@@ -11,7 +11,7 @@ app.register(fastifyJwt, {
 });
 
 app.register(cors, {
-  origin: process.env.CORS_ORIGIN,
+  origin: "https://data-tab-self.vercel.app",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type']
 })
