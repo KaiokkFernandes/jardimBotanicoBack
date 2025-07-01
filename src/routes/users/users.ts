@@ -60,4 +60,29 @@ export async function userRoutes(app: FastifyInstance) {
 
     return reply.code(204).send();
   });
+  
+  app.post("/login", async (request, reply) => {
+    const bodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(6),
+    });
+    const { email, password } = bodySchema.parse(request.body);
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || user.password !== password) {
+      return reply.code(401).send({ error: "E-mail ou senha inválidos" });
+    }
+
+    const token = app.jwt.sign({ id: user.id, email: user.email });
+    return { token };
+  });
+
+  app.addHook("onRequest", async (request, reply) => {
+    if (request.url === "/login" || request.url === "/users") return;
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      return reply.code(401).send({ error: "Token inválido" });
+    }
+  });
 }
